@@ -12,8 +12,8 @@ import pandas as pd
 import joblib
 
 
-model = joblib.load("salary_prediction_model.pkl")
-encoder = joblib.load("label_encoder.pkl")
+model = joblib.load("salary_prediction_model (2).pkl")
+encoder = joblib.load("label_encoder (2).pkl")
 
 
 st.title("Salary prediction app")
@@ -38,5 +38,5 @@ if st.button("Predict"):
   for col in encoder:
     df[col] = encoder[col].transform(df[col])
 
-    prediction = model.predict(df)
-    st.success(f"Predicted Salary: {prediction[0]:,.2f}")
+prediction = model.predict(df)
+st.success(f"Predicted Salary: {prediction[0]:,.2f}")
