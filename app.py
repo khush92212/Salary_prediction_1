@@ -10,9 +10,15 @@ import streamlit as st
 import pandas as pd
 import joblib
 
-# Load model and encoders
-model = joblib.load("salary_prediction_model (2).pkl")
-encoder = joblib.load("label_encoder (2).pkl")
+st.set_page_config(page_title="Salary Prediction")
+
+try:
+    model = joblib.load("salary_model.pkl")
+    encoder = joblib.load("encoder.pkl")
+except Exception as e:
+    st.error(f"Model loading error: {e}")
+    st.stop()
+
 
 st.title("Salary Prediction App")
 
