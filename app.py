@@ -10,33 +10,38 @@ Original file is located at
 import streamlit as st
 import pandas as pd
 import joblib
+import os
 
+# Load model safely
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+model = joblib.load(os.path.join(BASE_DIR, "salary_prediction_model.pkl"))
+encoder = joblib.load(os.path.join(BASE_DIR, "label_encoder.pkl"))
 
-model = joblib.load("salary_prediction_model.pkl")
-encoder = joblib.load("label_encoder.pkl")
+st.title("Salary Prediction App")
 
-
-st.title("Salary prediction app")
-
-
-age = st.number_input("Age",18,60)
+age = st.number_input("Age", 18, 60)
 gender = st.selectbox("Gender", encoder["Gender"].classes_)
-education= st.selectbox("Education Level" , encoder["Education Level"].classes_)
-job_title = st.selectbox("Job Title" , encoder["Job Title"].classes_)
-years_of_exp = st.number_input("Years of Experience" ,0,40)
-
-df = pd.dataFrame({
-    "Age":[age],
-    "Gender":[gender],
-    "Education Level":[education],
-    "Job Title":[job_title ],
-    "Years of Experience":[years_of_exp]
-
-})
+education = st.selectbox("Education Level", encoder["Education Level"].classes_)
+job_title = st.selectbox("Job Title", encoder["Job Title"].classes_)
+years_of_exp = st.number_input("Years of Experience", 0, 40)
 
 if st.button("Predict"):
-  for col in encoder:
-    df[col] = encoder[col].transform(df[col])
+
+    df = pd.DataFrame({
+        "Age": [age],
+        "Gender": [gender],
+        "Education Level": [education],
+        "Job Title": [job_title],
+        "Years of Experience": [years_of_exp]
+    })
+
+    # Encode categorical columns
+    for col in encoder:
+        df[col] = encoder[col].transform(df[col])
+
+    # Match training column order
+    df = df[model.feature_names_in_]
 
     prediction = model.predict(df)
+
     st.success(f"Predicted Salary: {prediction[0]:,.2f}")
