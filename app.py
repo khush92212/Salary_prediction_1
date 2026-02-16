@@ -10,7 +10,7 @@ import streamlit as st
 import pandas as pd
 import joblib
 
-# Load model and encoders
+
 model = joblib.load("salary_prediction_model.pkl")
 encoder = joblib.load("label_encoder.pkl")
 
@@ -32,13 +32,12 @@ if st.button("Predict"):
         "Years of Experience": [years_of_exp]
     })
 
-    # Encode categorical columns
+    
     for col in encoder:
         df[col] = encoder[col].transform(df[col])
 
-    # Reorder columns to match training
+   
     df = df[model.feature_names_in_]
 
-    prediction = model.predict(df)
-
-    st.success(f"Predicted Salary: {prediction[0]:,.2f}")
+prediction = model.predict(df)
+st.success(f"Predicted Salary: {prediction[0]:,.2f}")
